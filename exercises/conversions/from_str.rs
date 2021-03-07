@@ -10,7 +10,7 @@ struct Person {
     age: usize,
 }
 
-// I AM NOT DONE
+const error_message: &str = "Input is empty";
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -25,6 +25,28 @@ struct Person {
 impl FromStr for Person {
     type Err = String;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        match s {
+           _ if s.len() == 0 => { Err(error_message.to_string()) }
+           _ => {
+               let mut person = s.split(',');
+               match person.next() {
+                   Some("") | None => Err(error_message.to_string()),
+                   Some(name) => {
+                       match person.next() {
+                           Some("") | None => Err(error_message.to_string()),
+                           Some(age) => {
+                               match age.parse::<usize>() {
+                                   Err(error) => Err(error.to_string()),
+                                   Ok(age) => {
+                                       Ok( Person { name: name.to_string(), age })
+                                   }
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+        }
     }
 }
 
